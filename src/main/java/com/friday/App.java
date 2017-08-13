@@ -1,24 +1,22 @@
 package com.friday;
 
-import com.friday.consumer.MessageConsumer;
+import com.friday.utils.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Hello world!
  *
  */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        try{
-            System.out.println("Consumer starts consuming...");
-            MessageConsumer.start();
-        }catch(Exception e){
-            System.out.println("There's en error occured.");
-        }finally{
-            System.out.println("Consumer stops consuming...");
-            MessageConsumer.stop();
+public class App {
+    private static final Logger LOG = LoggerFactory.getLogger(App.class);
+
+    public static void main(String[] args) {
+        try {
+            Bootstrap.appStart(PropertiesUtil.getProperties("app.properties"));
+            LOG.info("App started...");
+        } catch (Exception e) {
+            LOG.error("Failed to start app.", e);
         }
-        
     }
 }

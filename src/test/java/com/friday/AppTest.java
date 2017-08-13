@@ -31,8 +31,8 @@ public class AppTest
     /**
      * Rigourous Test :-)
      */
-    public void testApp()
+    public void testESearch()
     {
-        assertTrue( true );
+        
     }
 }

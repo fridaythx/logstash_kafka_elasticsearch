@@ -1,34 +1,73 @@
 package com.friday.consumer;
 
+import com.friday.thread.TaskDispatcher;
+import com.friday.thread.TaskSource;
+import com.friday.thread.constant.TaskType;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.internals.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MessageConsumer 
-{
-    private static KafkaConsumer<String, String> consumer;
-    public static void start(){
-        Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
-        props.put("group.id", "test");
-        props.put("enable.auto.commit", "true");
-        props.put("auto.commit.interval.ms", "1000");
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        consumer = new KafkaConsumer<String,String>(props);
-        consumer.subscribe(Arrays.asList("test"));
-        while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(100);
-            for (ConsumerRecord<String, String> record : records)
-                System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
-        }
- 
+public class MessageConsumer {
+    private static final Logger LOG = LoggerFactory.getLogger(MessageConsumer.class);
+
+    private DelegatingMessageHandle handler;
+
+    private KafkaConsumer<String, String> consumer;
+
+    public MessageConsumer(DelegatingMessageHandle messageHandle) {
+        this.handler = messageHandle;
     }
 
-    public static void stop(){
-        if(consumer != null){
+    public void init(Properties appProps) {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", appProps.get("kafka.bootstrap.servers"));
+        props.put("group.id", appProps.get("kafka.group.id"));
+        props.put("enable.auto.commit", appProps.get("kafka.enable.auto.commit"));
+        props.put("key.deserializer", appProps.get("kafka.key.deserializer"));
+        props.put("value.deserializer", appProps.get("kafka.value.deserializer"));
+        String topics = (String)appProps.get("kafka.topics");
+        consumer = new KafkaConsumer<String, String>(props);
+        consumer.subscribe(Arrays.asList(topics.split(",")));
+        LOG.info("Consumer initialized...");
+    }
+
+    public void consume() {
+        ConsumerRecords<String, String> records = consumer.poll(100);
+        for (TopicPartition partition : records.partitions()) {
+            List<ConsumerRecord<String, String>> partitionRecords = records.records(partition);
+            try {
+                for (ConsumerRecord<String, String> record : partitionRecords) {
+                    handler.handleMessage(new Message(record));
+                }
+            } catch (Exception e) {
+                long firstOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
+                LOG.warn(String.format(
+                        "An exception occurred during handling message, do not call commit. partition %s offset %d",
+                        partition, firstOffset), e);
+                continue;
+            }
+            long lastOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
+            commit(partition, lastOffset + 1);
+
+        }
+    }
+
+    private void commit(TopicPartition partition, long offset) {
+        consumer.commitSync(Collections.singletonMap(partition, new OffsetAndMetadata(offset)));
+    }
+
+    public void stop() {
+        if (consumer != null) {
             consumer.close();
         }
     }
