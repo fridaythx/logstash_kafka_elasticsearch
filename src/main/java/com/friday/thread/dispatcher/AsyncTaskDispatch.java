@@ -36,7 +36,7 @@ public class AsyncTaskDispatch implements TaskDispatch {
         dataCleanExecutorService.execute(new DataCleanTask());
     }
 
-    public void dispatchTask(TaskSource taskSrc) throws Exception {
+    public void dispatchTask(TaskSource taskSrc) throws RuntimeException {
         switch (taskSrc.getTaskType()) {
         case PreLogicTask:
             addPreLogicTask(taskSrc);

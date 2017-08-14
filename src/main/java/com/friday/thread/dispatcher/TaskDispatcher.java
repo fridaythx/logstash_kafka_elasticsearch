@@ -7,11 +7,11 @@ public class TaskDispatcher {
 
     private TaskDispatch syncTaskDispatch = new SyncTaskDispatch();
 
-    public void dispatchTaskAsync(TaskSource taskSrc) throws Exception {
+    public void dispatchTaskAsync(TaskSource taskSrc) throws RuntimeException {
         asyncTaskDispatch.dispatchTask(taskSrc);
     }
 
-    public void dispatchTaskSync(TaskSource taskSrc) throws Exception {
+    public void dispatchTaskSync(TaskSource taskSrc) throws RuntimeException {
         syncTaskDispatch.dispatchTask(taskSrc);
     }
 }

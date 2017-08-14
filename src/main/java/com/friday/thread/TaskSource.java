@@ -1,21 +1,21 @@
 package com.friday.thread;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.friday.consumer.Message;
 import com.friday.thread.constant.TaskType;
 import com.friday.thread.dispatcher.TaskDispatcher;
 
-public class TaskSource {
+public class TaskSource{
     private TaskType taskType;
 
-    private ConsumerRecord<String, String> source;
+    private Message source;
 
     private Object taskEntity;
 
     private TaskDispatcher taskDispatcher;
 
-    public TaskSource(ConsumerRecord<String, String> source, TaskType taskType) {
+    public TaskSource(Message source, TaskType taskType) {
+        this(taskType);
         this.source = source;
     }
 
@@ -24,7 +24,7 @@ public class TaskSource {
     }
 
     public TaskSource(Message message, TaskType taskType,TaskDispatcher taskDispatcher) {
-        this(message.getRecord(), taskType);
+        this(message, taskType);
         this.taskDispatcher = taskDispatcher;
     }
 
@@ -33,13 +33,6 @@ public class TaskSource {
      */
     public TaskType getTaskType() {
         return taskType;
-    }
-
-    /**
-     * @param taskType the taskType to set
-     */
-    public void setTaskType(TaskType taskType) {
-        this.taskType = taskType;
     }
 
     /**
@@ -52,7 +45,7 @@ public class TaskSource {
     /**
      * @return the source
      */
-    public ConsumerRecord<String, String> getSource() {
+    public Message getSource() {
         return source;
     }
 
@@ -61,5 +54,12 @@ public class TaskSource {
      */
     public TaskDispatcher getTaskDispatcher() {
         return taskDispatcher;
+    }
+
+    /**
+     * @param taskEntity the taskEntity to set
+     */
+    public void setTaskEntity(Object taskEntity) {
+        this.taskEntity = taskEntity;
     }
 }

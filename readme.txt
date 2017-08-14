@@ -6,7 +6,7 @@ nohup bin/logstash -f logstash-simple.conf > my_logstash.log &
 https://www.elastic.co/guide/en/logstash/5.5/advanced-pipeline.html#configuring-filebeat
 
 Kafka
-Start zookepper
+Start zookeper
 nohup bin/zookeeper-server-start.sh config/zookeeper.properties > my_zookeepper.log &
 Start kafka server
 nohup bin/kafka-server-start.sh config/server.properties > my_kafkaserver.log &
@@ -24,10 +24,11 @@ bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-replicated-
 
 send msg from stdin
 bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic my-replicated-topic
 
 Start a consumer
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
-
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-replicated-topic --from-beginning
 elasticsearch
 start esearch
 nohup bin/elasticsearch > my_esearch.log &

@@ -12,13 +12,14 @@ import org.slf4j.LoggerFactory;
 public class BasicLogicWorker implements Runnable, DelegatingMessageHandle {
     private static final Logger LOG = LoggerFactory.getLogger(BasicLogicWorker.class);
     private boolean running = true;
+    private String identifier;
     private Properties appProps;
     private MessageConsumer consumer;
     private TaskDispatcher taskDispatcher = new TaskDispatcher();
-    
 
-    public BasicLogicWorker(Properties appProps) {
+    public BasicLogicWorker(Properties appProps, String identifier) {
         this.appProps = appProps;
+        this.identifier = identifier;
         consumer = new MessageConsumer(this);
     }
 
@@ -40,6 +41,7 @@ public class BasicLogicWorker implements Runnable, DelegatingMessageHandle {
 
     public void stop() {
         running = false;
+        consumer.stop();
     }
 
     public void handleMessage(Message message) throws Exception {

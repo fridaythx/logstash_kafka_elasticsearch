@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 public class SyncTaskDispatch implements TaskDispatch {
     private static final Logger LOG = LoggerFactory.getLogger(SyncTaskDispatch.class);
    
-    public void dispatchTask(TaskSource taskSrc) throws Exception {
+    public void dispatchTask(TaskSource taskSrc) throws RuntimeException {
         switch (taskSrc.getTaskType()) {
         case PreLogicTask:
             runPreLogicTask(taskSrc);

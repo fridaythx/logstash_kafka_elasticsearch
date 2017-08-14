@@ -13,6 +13,7 @@ public class App {
 
     public static void main(String[] args) {
         try {
+            LOG.info("App starting...");
             Bootstrap.appStart(PropertiesUtil.getProperties("app.properties"));
             LOG.info("App started...");
         } catch (Exception e) {

@@ -1,8 +1,5 @@
 package com.friday.consumer;
 
-import com.friday.thread.TaskDispatcher;
-import com.friday.thread.TaskSource;
-import com.friday.thread.constant.TaskType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +10,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.internals.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +31,7 @@ public class MessageConsumer {
         props.put("enable.auto.commit", appProps.get("kafka.enable.auto.commit"));
         props.put("key.deserializer", appProps.get("kafka.key.deserializer"));
         props.put("value.deserializer", appProps.get("kafka.value.deserializer"));
-        String topics = (String)appProps.get("kafka.topics");
+        String topics = (String) appProps.get("kafka.topics");
         consumer = new KafkaConsumer<String, String>(props);
         consumer.subscribe(Arrays.asList(topics.split(",")));
         LOG.info("Consumer initialized...");
@@ -43,22 +39,27 @@ public class MessageConsumer {
 
     public void consume() {
         ConsumerRecords<String, String> records = consumer.poll(100);
-        for (TopicPartition partition : records.partitions()) {
-            List<ConsumerRecord<String, String>> partitionRecords = records.records(partition);
-            try {
-                for (ConsumerRecord<String, String> record : partitionRecords) {
-                    handler.handleMessage(new Message(record));
+        if (records.count() > 0) {
+            LOG.info("Batch of records size : {}", records.count());
+            for (TopicPartition partition : records.partitions()) {
+                List<ConsumerRecord<String, String>> partitionRecords = records.records(partition);
+                try {
+                    for (ConsumerRecord<String, String> record : partitionRecords) {
+                        handler.handleMessage(new Message(record));
+                    }
+                } catch (Exception e) {
+                    long firstOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
+                    LOG.warn(String.format(
+                            "An exception occurred during handling message, do not call commit. partition [%s] rollback position => %d",
+                            partition, firstOffset), e);
+                    continue;
                 }
-            } catch (Exception e) {
-                long firstOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
-                LOG.warn(String.format(
-                        "An exception occurred during handling message, do not call commit. partition %s offset %d",
-                        partition, firstOffset), e);
-                continue;
+                long lastOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
+                LOG.info(
+                        "Batch of records have been all consumed successfully, do commit. partition [{}] committed position => {}",
+                        partition, lastOffset);
+                commit(partition, lastOffset + 1);
             }
-            long lastOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
-            commit(partition, lastOffset + 1);
-
         }
     }
 
