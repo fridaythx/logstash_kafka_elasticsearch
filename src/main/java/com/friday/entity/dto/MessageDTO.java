@@ -1,5 +1,6 @@
 package com.friday.entity.dto;
 
+import java.sql.Timestamp;
 
 public class MessageDTO {
     private short severity;
