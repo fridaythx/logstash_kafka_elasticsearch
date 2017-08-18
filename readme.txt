@@ -45,3 +45,8 @@ git clone git://github.com/mobz/elasticsearch-head.git
 cd elasticsearch-head
 npm install 
 npm start
+
+
+Run chmod +x ./startup.sh && ./startup.sh to start this java program.
+
+Setting JAVA and MAVEN env variables manually may be necessary for you to run this program.

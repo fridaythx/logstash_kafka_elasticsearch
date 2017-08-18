@@ -23,7 +23,7 @@ public class SyncTaskDispatch implements TaskDispatch {
             runDbOpTask(taskSrc);
             break;
         }
-        LOG.info(String.format("Dispatch task successfully, taskType [%s]", taskSrc.getTaskType().toString()));
+        LOG.info(String.format("Dispatched task successfully, taskType [%s]", taskSrc.getTaskType().toString()));
     }
 
     public void runPreLogicTask(TaskSource taskSrc) {

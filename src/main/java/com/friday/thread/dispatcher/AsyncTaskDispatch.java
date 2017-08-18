@@ -42,6 +42,6 @@ public class AsyncTaskDispatch implements TaskDispatch {
             addDbOpTask(taskSrc);
             break;
         }
-        LOG.info(String.format("Dispatch task successfully, taskType [%s]", taskSrc.getTaskType().toString()));
+        LOG.info(String.format("Dispatched task successfully, taskType [%s]", taskSrc.getTaskType().toString()));
     }
 }
