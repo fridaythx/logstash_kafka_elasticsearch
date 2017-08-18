@@ -9,9 +9,9 @@
 			<dataSource type="POOLED">
 				<property name="driver" value="com.mysql.jdbc.Driver" />
 				<property name="url"
-					value="jdbc:mysql://rds6fbqrf6fbqrf.mysql.rds.aliyuncs.com:3306/front_end_00" />
-				<property name="username" value="readonly_tst" />
-				<property name="password" value="readonly_tst" />
+					value="jdbc:mysql://host:port/schema" />
+				<property name="username" value="" />
+				<property name="password" value="" />
 			</dataSource>
 		</environment>
 	</environments>
