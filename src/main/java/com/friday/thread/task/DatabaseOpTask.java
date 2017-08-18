@@ -3,7 +3,7 @@ package com.friday.thread.task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSONObject;
+import com.friday.entity.dto.MessageDTO;
 import com.friday.thread.TaskSource;
 
 /**
@@ -17,16 +17,16 @@ public class DatabaseOpTask extends BasicTask {
     }
 
     public void taskRun() {
-        JSONObject jsonObj = (JSONObject) taskSrc.getTaskEntity();
-        long count = jsonObj.getLong("count");
+        MessageDTO messageDTO = (MessageDTO) taskSrc.getTaskEntity();
+        int count = messageDTO.getRepeatCount();
         if (count == 0) {
             LOG.info(
                     "Insert into db with fType = normal,fCount = {}, fStartTime = {}, fLastTime = {}, fEndTime = {}, fStatus = {}, fContent = {}",
-                    count, jsonObj.getDate("timestamp"), jsonObj.getDate("timestamp"), jsonObj.getDate("timestamp"),
-                    jsonObj.getString("level"), jsonObj.getString("detail"));
+                    count, messageDTO.getTimestamp(), messageDTO.getTimestamp(), messageDTO.getTimestamp(),
+                    messageDTO.getSeverity(), messageDTO.getMessage());
         } else {
             LOG.info("Update db with  fCount = {}, fLastTime = {}, fEndTIme = {}, fContent = {}", count,
-                    jsonObj.getDate("timestamp"), jsonObj.getDate("timestamp"), jsonObj.getString("detail"));
+                    messageDTO.getTimestamp(), messageDTO.getTimestamp(), messageDTO.getMessage());
         }
     }
 }

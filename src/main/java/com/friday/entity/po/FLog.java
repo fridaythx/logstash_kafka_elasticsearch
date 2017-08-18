@@ -1,4 +1,4 @@
-package com.friday.entity;
+package com.friday.entity.po;
 
 import java.io.Serializable;
 import java.util.Date;

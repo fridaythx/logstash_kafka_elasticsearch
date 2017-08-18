@@ -1,5 +1,6 @@
 package com.friday;
 
+import com.friday.schedule.MyScheduler;
 import com.friday.thread.BasicLogicWorker;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -18,20 +19,24 @@ public class Bootstrap {
         LOG.info("WorkerThread started...");
         startHttpServerListener();
         LOG.info("HTTPServer listener started...");
-        startDataCleanTimer();
-        LOG.info("DataCleanTimer started...");
+        startScheduler();
+        LOG.info("Scheduler started...");
     }
 
     private static void startWorkerThread() {
-        new Thread(new BasicLogicWorker(appProps,"Worker-1")).start();
+        new Thread(new BasicLogicWorker(appProps, "Worker-1")).start();
     }
 
     private static void startHttpServerListener() {
 
     }
 
-    private static void startDataCleanTimer() {
-
+    private static void startScheduler() {
+        try {
+            MyScheduler.getInstance(appProps).registerDataCleanJob().start();
+        } catch (Exception e) {
+            LOG.error("Failed to start scheduler.", e);
+        }
     }
 
     public static void printAppProps() {

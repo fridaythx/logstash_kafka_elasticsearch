@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.friday.entity.dto.MessageDTO;
 import com.friday.esearch.ElasticSearchAPI;
 import com.friday.esearch.impl.ElasticSearchAPIImpl;
 import com.friday.thread.TaskSource;
@@ -32,23 +33,20 @@ public class PreLogicTask extends BasicTask {
         //if it is kind of alert.
         String content = taskSrc.getSource().getContent();
         LOG.info("Message content : {}", content);
-        JSONObject jsonObj = JSON.parseObject(content);
-        String level = jsonObj.getString("level");
-        String detail = jsonObj.getString("detail");
-        if (LogLevel.LEVEL_ALERT.equals(level)) {
+        MessageDTO messageDTO = JSON.parseObject(content,MessageDTO.class);
+        if(messageDTO.getSeverity() >= 0 && messageDTO.getSeverity() <= 3){
             //  dispatchAlertTask
             TaskSource newTaskSource = new TaskSource(taskSrc.getSource(), TaskType.AlertTask,
                     taskSrc.getTaskDispatcher());
-            newTaskSource.setTaskEntity(jsonObj);
+            newTaskSource.setTaskEntity(messageDTO);
             taskDispatcher.dispatchTaskAsync(newTaskSource);
         }
-        //{"path":"/Users/user4/Documents/test.log","networkGroup":"GDSD-PDC-Intranet-GTM2","@timestamp":"2017-08-13T06:03:12.503Z","level":"alert","@version":"1","host":"user4deMacBook-Pro.local","extra2":"011a4002:1:","extra3":"SNMP_TRAP:","extra1":"gtmd[17015]:","timestamp":"2017-08-04T07:36:32.000Z"}
         try {
-            long count = elasticSearchAPI.countKeyword("detail.keyword", detail);
+            long count = elasticSearchAPI.countKeyword("message.keyword", messageDTO.getMessage());
+            messageDTO.setRepeatCount((int)count);
             TaskSource newTaskSource = new TaskSource(taskSrc.getSource(), TaskType.DbOpTask,
                     taskSrc.getTaskDispatcher());
-            jsonObj.put("count", count);
-            newTaskSource.setTaskEntity(jsonObj);
+            newTaskSource.setTaskEntity(messageDTO);
             taskDispatcher.dispatchTaskSync(newTaskSource);
         } catch (Exception e) {
             LOG.error("An error occurred during using elasticsearch.", e);

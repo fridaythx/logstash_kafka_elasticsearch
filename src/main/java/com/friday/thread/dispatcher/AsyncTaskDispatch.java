@@ -2,7 +2,6 @@ package com.friday.thread.dispatcher;
 
 import com.friday.thread.TaskSource;
 import com.friday.thread.task.AlertTask;
-import com.friday.thread.task.DataCleanTask;
 import com.friday.thread.task.DatabaseOpTask;
 import com.friday.thread.task.PreLogicTask;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +15,6 @@ public class AsyncTaskDispatch implements TaskDispatch {
     private ExecutorService alertExecutorService = Executors.newFixedThreadPool(1);
     private ExecutorService preLogicExecutorService = Executors.newFixedThreadPool(10);
     private ExecutorService dbOpTaskExecutorService = Executors.newFixedThreadPool(10);
-    private ExecutorService dataCleanExecutorService = Executors.newFixedThreadPool(1);
 
     public void addPreLogicTask(TaskSource taskSrc) {
         preLogicExecutorService.execute(new PreLogicTask(taskSrc));
@@ -32,10 +30,6 @@ public class AsyncTaskDispatch implements TaskDispatch {
         dbOpTaskExecutorService.execute(new DatabaseOpTask(taskSrc));
     }
 
-    public void addDataCleanTask() {
-        dataCleanExecutorService.execute(new DataCleanTask());
-    }
-
     public void dispatchTask(TaskSource taskSrc) throws RuntimeException {
         switch (taskSrc.getTaskType()) {
         case PreLogicTask:
@@ -46,9 +40,6 @@ public class AsyncTaskDispatch implements TaskDispatch {
             break;
         case DbOpTask:
             addDbOpTask(taskSrc);
-            break;
-        case DataCleanTask:
-            addDataCleanTask();
             break;
         }
         LOG.info(String.format("Dispatch task successfully, taskType [%s]", taskSrc.getTaskType().toString()));

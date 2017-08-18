@@ -2,7 +2,6 @@ package com.friday.thread.dispatcher;
 
 import com.friday.thread.TaskSource;
 import com.friday.thread.task.AlertTask;
-import com.friday.thread.task.DataCleanTask;
 import com.friday.thread.task.DatabaseOpTask;
 import com.friday.thread.task.PreLogicTask;
 
@@ -23,9 +22,6 @@ public class SyncTaskDispatch implements TaskDispatch {
         case DbOpTask:
             runDbOpTask(taskSrc);
             break;
-        case DataCleanTask:
-            runDataCleanTask();
-            break;
         }
         LOG.info(String.format("Dispatch task successfully, taskType [%s]", taskSrc.getTaskType().toString()));
     }
@@ -40,9 +36,5 @@ public class SyncTaskDispatch implements TaskDispatch {
 
     public void runDbOpTask(TaskSource taskSrc) {
         new DatabaseOpTask(taskSrc).run();
-    }
-
-    public void runDataCleanTask() {
-        new DataCleanTask().run();
     }
 }

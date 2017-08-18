@@ -11,23 +11,19 @@ nohup bin/zookeeper-server-start.sh config/zookeeper.properties > my_zookeepper.
 Start kafka server
 nohup bin/kafka-server-start.sh config/server.properties > my_kafkaserver.log &
 nohup bin/kafka-server-start.sh config/server-1.properties > my_kafkaserver1.log &
-nohup bin/kafka-server-start.sh config/server-2.properties > my_kafkaserver2.log &
 
 
 Create a topic 
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 3 --partitions 1 --topic my-replicated-topic
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 2 --partitions 1 --topic my-replicated-topic
 
 Take a look
 bin/kafka-topics.sh --list --zookeeper localhost:2181
 bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-replicated-topic
 
 send msg from stdin
-bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 bin/kafka-console-producer.sh --broker-list localhost:9092 --topic my-replicated-topic
 
 Start a consumer
-bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-replicated-topic --from-beginning
 elasticsearch
 start esearch
