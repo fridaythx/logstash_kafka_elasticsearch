@@ -2,39 +2,23 @@ package com.friday;
 
 import java.util.Properties;
 
+import org.junit.Test;
 import com.friday.esearch.ElasticSearchAPI;
 import com.friday.esearch.ElasticSearchConnector;
 import com.friday.esearch.impl.ElasticSearchAPIImpl;
 import com.friday.schedule.MyScheduler;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Unit test for simple App.
  */
-public class AppTest extends TestCase {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest(String testName) {
-        super(testName);
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(AppTest.class);
-    }
+public class AppTest {
 
     /**
      * Rigourous Test :-)
      */
-    public void _testESearch() {
+    @Test
+    public void testESearch() {
         try {
             ElasticSearchAPI api = new ElasticSearchAPIImpl();
             api.countKeyword("detail.keyword",
@@ -48,13 +32,14 @@ public class AppTest extends TestCase {
         }
     }
 
+    @Test
     public void testScheduler(){
         try{
             Properties props = new Properties();
             props.setProperty("schedule.job.dataCleanJobCron", "0 0 * * * ? *");
             props.setProperty("schedule.job.accAvgJobCron", "0 0 * * * ? *");
             MyScheduler.getInstance(props).registerDataCleanJob().start();
-            Thread.sleep(1000 * 60 * 60 * 10);
+            Thread.sleep(1000);
         }catch(Exception e){
             e.printStackTrace();
             throw new RuntimeException("failed.");

@@ -21,4 +21,12 @@ public class ElasticSearchAPIImpl implements ElasticSearchAPI {
         LOG.info("Time used : {}", System.currentTimeMillis() - startTime);
         return response.getHits().getTotalHits();
     }
+
+    public long queryByCondition() throws Exception {
+        
+
+
+
+        return 0;
+    }
 }

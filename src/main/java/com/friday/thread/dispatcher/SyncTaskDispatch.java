@@ -2,6 +2,7 @@ package com.friday.thread.dispatcher;
 
 import com.friday.thread.TaskSource;
 import com.friday.thread.task.AlertTask;
+import com.friday.thread.task.CalcDelayValTask;
 import com.friday.thread.task.DatabaseOpTask;
 import com.friday.thread.task.PreLogicTask;
 
@@ -22,6 +23,9 @@ public class SyncTaskDispatch implements TaskDispatch {
         case DbOpTask:
             runDbOpTask(taskSrc);
             break;
+        case DelayTask:
+            runCalcTask(taskSrc);
+            break;
         }
         LOG.info(String.format("Dispatched task successfully, taskType [%s]", taskSrc.getTaskType().toString()));
     }
@@ -36,5 +40,9 @@ public class SyncTaskDispatch implements TaskDispatch {
 
     public void runDbOpTask(TaskSource taskSrc) {
         new DatabaseOpTask(taskSrc).run();
+    }
+
+    public void runCalcTask(TaskSource taskSrc){
+        new CalcDelayValTask(taskSrc).run();
     }
 }

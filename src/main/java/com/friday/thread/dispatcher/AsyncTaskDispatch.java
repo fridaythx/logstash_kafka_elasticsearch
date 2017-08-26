@@ -40,6 +40,7 @@ public class AsyncTaskDispatch implements TaskDispatch {
             break;
         case DbOpTask:
             addDbOpTask(taskSrc);
+        case DelayTask:
             break;
         }
         LOG.info(String.format("Dispatched task successfully, taskType [%s]", taskSrc.getTaskType().toString()));

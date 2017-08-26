@@ -1,10 +1,11 @@
 package com.friday;
 
+import com.friday.httpserver.HttpServerHandler;
 import com.friday.schedule.MyScheduler;
 import com.friday.thread.BasicLogicWorker;
 import java.util.Map.Entry;
 import java.util.Properties;
-
+import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,15 @@ public class Bootstrap {
     }
 
     private static void startHttpServerListener() {
+        String port = appProps.getProperty("httpserver.port");
+        try{
+            Server server = new Server(Integer.parseInt(port));
+            server.setHandler(new HttpServerHandler());
+            server.start();
+            server.join();
+        }catch(Exception e){
+            LOG.error(String.format("Failed to start HttpServer at port {}.",port), e);
+        }
 
     }
 

@@ -12,7 +12,6 @@ public class MessageDTO {
     private String host;
     private String message;
     private String logsource;
-    private int repeatCount;
 
     /**
      * @param severity the severity to set
@@ -138,20 +137,6 @@ public class MessageDTO {
      */
     public String getLogsource() {
         return logsource;
-    }
-
-    /**
-     * @param repeatCount the repeatCount to set
-     */
-    public void setRepeatCount(int repeatCount) {
-        this.repeatCount = repeatCount;
-    }
-
-    /**
-     * @return the repeatCount
-     */
-    public int getRepeatCount() {
-        return repeatCount;
     }
 
 }

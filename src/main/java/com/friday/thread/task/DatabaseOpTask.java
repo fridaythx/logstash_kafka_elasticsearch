@@ -2,8 +2,7 @@ package com.friday.thread.task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.friday.entity.dto.MessageDTO;
+import com.friday.entity.po.FLog;
 import com.friday.thread.TaskSource;
 
 /**
@@ -17,16 +16,16 @@ public class DatabaseOpTask extends BasicTask {
     }
 
     public void taskRun() {
-        MessageDTO messageDTO = (MessageDTO) taskSrc.getTaskEntity();
-        int count = messageDTO.getRepeatCount();
+        FLog log = (FLog) taskSrc.getTaskEntity();
+        int count = log.getCount();
         if (count == 0) {
             LOG.info(
                     "Insert into db with fType = normal,fCount = {}, fStartTime = {}, fLastTime = {}, fEndTime = {}, fStatus = {}, fContent = {}",
-                    count, messageDTO.getTimestamp(), messageDTO.getTimestamp(), messageDTO.getTimestamp(),
-                    messageDTO.getSeverity(), messageDTO.getMessage());
+                    count, log.getStartTime(), log.getLastTime(), log.getEndTime(),
+                    log.getStatus(), log.getContent());
         } else {
-            LOG.info("Update db with  fCount = {}, fLastTime = {}, fEndTIme = {}, fContent = {}", count,
-                    messageDTO.getTimestamp(), messageDTO.getTimestamp(), messageDTO.getMessage());
+            LOG.info("Update db with  fCount = {}, fLastTime = {}, fEndTime = {}, fContent = {}", count,
+            log.getCount(), log.getLastTime(), log.getEndTime());
         }
     }
 }

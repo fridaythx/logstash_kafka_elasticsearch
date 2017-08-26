@@ -1,5 +1,5 @@
 package com.friday.thread.constant;
 
 public enum TaskType {
-    PreLogicTask, AlertTask, DbOpTask
+    PreLogicTask, AlertTask, DbOpTask,DelayTask
 }
