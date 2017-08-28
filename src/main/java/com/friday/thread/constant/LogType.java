@@ -9,7 +9,9 @@ public class LogType {
 
     public static final String AUDIT_LOG = "audit";
 
-    public static final String DELAY_LOG = "delay";
-
     public static final String UNRECOGNIZED = "unrecognized";
+    
+    public static final String COMMON_LOG_LIKE = "common_log_like";
+    
+    public static final String DELAY_LOG_LIKE = "delay_log_like";
 }

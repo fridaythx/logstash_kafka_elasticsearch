@@ -11,34 +11,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ElasticSearchConnector {
-    private static final Logger LOG = LoggerFactory.getLogger(ElasticSearchConnector.class);
-    private TransportClient client;
+	private static final Logger LOG = LoggerFactory.getLogger(ElasticSearchConnector.class);
+	private TransportClient client;
 
-    private static ElasticSearchConnector singleton;
+	private static ElasticSearchConnector singleton;
 
-    private ElasticSearchConnector(){
-    }
+	private ElasticSearchConnector() {
+	}
 
-    public static ElasticSearchConnector getSingletonInstance() throws UnknownHostException{
-        if(singleton == null){
-            singleton = new ElasticSearchConnector();
-            singleton.connect();
-        }
-        return singleton;
-    }
-    
-    public void connect() throws UnknownHostException {
-        Settings settings = Settings.builder().put("cluster.name","elasticsearch").build();        
-        client = new PreBuiltTransportClient(settings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
-    }
+	public static synchronized ElasticSearchConnector getSingletonInstance() throws UnknownHostException {
+		if (singleton == null) {
+			singleton = new ElasticSearchConnector();
+			singleton.connect();
+		}
+		return singleton;
+	}
 
-    public TransportClient getClient(){
-        return client;
-    }
+	public void connect() throws UnknownHostException {
+		Settings settings = Settings.builder().put("cluster.name", "elasticsearch").build();
+		client = new PreBuiltTransportClient(settings)
+				.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
+	}
 
-    public void disconnect() {
-        if(client != null){
-            client.close();
-        }
-    }
+	public TransportClient getClient() {
+		return client;
+	}
+
+	public void disconnect() {
+		if (client != null) {
+			client.close();
+		}
+	}
 }

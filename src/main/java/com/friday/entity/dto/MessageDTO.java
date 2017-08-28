@@ -3,6 +3,7 @@ package com.friday.entity.dto;
 import java.sql.Timestamp;
 
 public class MessageDTO {
+	private String type;
     private short severity;
     private short facility;
     private short priority;
@@ -139,4 +140,11 @@ public class MessageDTO {
         return logsource;
     }
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

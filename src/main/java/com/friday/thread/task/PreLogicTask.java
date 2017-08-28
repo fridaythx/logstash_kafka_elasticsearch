@@ -34,6 +34,13 @@ public class PreLogicTask extends BasicTask {
         String content = taskSrc.getSource().getContent();
         LOG.info("Message content : {}", content);
         MessageDTO messageDTO = JSON.parseObject(content, MessageDTO.class);
+        
+        	if(messageDTO.getType() != null) {
+        		//escape delay calc message
+        		LOG.info("Escape delay calc message.");
+        		return;
+        	}
+        
         if (messageDTO.getSeverity() >= 0 && messageDTO.getSeverity() <= 3) {
             //  dispatchAlertTask
             TaskSource newTaskSource = new TaskSource(taskSrc.getSource(), TaskType.AlertTask,
@@ -55,18 +62,8 @@ public class PreLogicTask extends BasicTask {
             log.setType(LogType.GTM_LOG);
         } else if (matchAuditLog(messageDTO)) {
             log.setType(LogType.AUDIT_LOG);
-        } else if (matchDelayLog(messageDTO)) {
-            log.setType(LogType.DELAY_LOG);
         } else {
             log.setType(LogType.UNRECOGNIZED);
-        }
-
-        if (log.getType().equals(LogType.DELAY_LOG)) {
-            TaskSource newTaskSource = new TaskSource(taskSrc.getSource(), TaskType.DelayTask,
-                    taskSrc.getTaskDispatcher());
-            newTaskSource.setTaskEntity(messageDTO);
-            taskDispatcher.dispatchTaskSync(newTaskSource);
-            return;
         }
 
         try {
@@ -111,13 +108,6 @@ public class PreLogicTask extends BasicTask {
 
     public boolean matchAuditLog(MessageDTO dto) {
         if (matchAny(dto.getFacility(), 16) && dto.getMessage().matches("AUDIT")) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean matchDelayLog(MessageDTO dto) {
-        if (matchAny(dto.getFacility(), 16) && matchAny(dto.getSeverity(), 6) && dto.getMessage().matches("^Delay")) {
             return true;
         }
         return false;

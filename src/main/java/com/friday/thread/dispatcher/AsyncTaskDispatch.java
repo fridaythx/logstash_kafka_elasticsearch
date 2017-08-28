@@ -11,38 +11,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AsyncTaskDispatch implements TaskDispatch {
-    private static final Logger LOG = LoggerFactory.getLogger(AsyncTaskDispatch.class);
-    private ExecutorService alertExecutorService = Executors.newFixedThreadPool(1);
-    private ExecutorService preLogicExecutorService = Executors.newFixedThreadPool(10);
-    private ExecutorService dbOpTaskExecutorService = Executors.newFixedThreadPool(10);
+	private static final Logger LOG = LoggerFactory.getLogger(AsyncTaskDispatch.class);
+	private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-    public void addPreLogicTask(TaskSource taskSrc) {
-        preLogicExecutorService.execute(new PreLogicTask(taskSrc));
-    }
+	public void addPreLogicTask(TaskSource taskSrc) {
+		executorService.execute(new PreLogicTask(taskSrc));
+	}
 
-    public void addAlertTask(TaskSource taskSrc) {
-        //删冗
-        //告警
-        alertExecutorService.execute(new AlertTask(taskSrc));
-    }
+	public void addAlertTask(TaskSource taskSrc) {
+		executorService.execute(new AlertTask(taskSrc));
+	}
 
-    public void addDbOpTask(TaskSource taskSrc) {
-        dbOpTaskExecutorService.execute(new DatabaseOpTask(taskSrc));
-    }
+	public void addDbOpTask(TaskSource taskSrc) {
+		executorService.execute(new DatabaseOpTask(taskSrc));
+	}
 
-    public void dispatchTask(TaskSource taskSrc) throws RuntimeException {
-        switch (taskSrc.getTaskType()) {
-        case PreLogicTask:
-            addPreLogicTask(taskSrc);
-            break;
-        case AlertTask:
-            addAlertTask(taskSrc);
-            break;
-        case DbOpTask:
-            addDbOpTask(taskSrc);
-        case DelayTask:
-            break;
-        }
-        LOG.info(String.format("Dispatched task successfully, taskType [%s]", taskSrc.getTaskType().toString()));
-    }
+	public void dispatchTask(TaskSource taskSrc) throws RuntimeException {
+		switch (taskSrc.getTaskType()) {
+		case PreLogicTask:
+			addPreLogicTask(taskSrc);
+			break;
+		case AlertTask:
+			addAlertTask(taskSrc);
+			break;
+		case DbOpTask:
+			addDbOpTask(taskSrc);
+		case DelayTask:
+			break;
+		}
+		LOG.info(String.format("Dispatched task successfully, taskType [%s]", taskSrc.getTaskType().toString()));
+	}
 }

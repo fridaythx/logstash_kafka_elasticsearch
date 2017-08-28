@@ -17,7 +17,6 @@ import java.util.Properties;
 import static org.quartz.CronScheduleBuilder.*;
 import org.quartz.JobDetail;
 
-import static org.quartz.SimpleScheduleBuilder.*;
 
 public class MyScheduler {
     private static final Logger LOG = LoggerFactory.getLogger(MyScheduler.class);
@@ -49,6 +48,7 @@ public class MyScheduler {
 
     public MyScheduler registerDataCleanJob() {
         JobDetail job = newJob(DataCleanJob.class).withIdentity("job1", "group1").build();
+        job.getJobDataMap().put("appProps", properties);
         Trigger trigger = newTrigger().withIdentity("trigger1", "group1").startNow()
                 .withSchedule(cronSchedule(properties.getProperty("schedule.job.dataCleanJobCron", "0 0 * * * ? *")))
                 .forJob(job).build();
@@ -63,8 +63,9 @@ public class MyScheduler {
 
     public MyScheduler registerAccAvgJob() {
         JobDetail job = newJob(AccAvgJob.class).withIdentity("job2", "group1").build();
+        job.getJobDataMap().put("appProps", properties);
         Trigger trigger = newTrigger().withIdentity("trigger2", "group1").startNow()
-                .withSchedule(cronSchedule(properties.getProperty("schedule.job.dataCleanJobCron", "0 0 * * * ? *")))
+                .withSchedule(cronSchedule(properties.getProperty("schedule.job.accAvgJobCron", "0 0 * * * ? *")))
                 .forJob(job).build();
         try {
             _scheduler.scheduleJob(job, trigger);
