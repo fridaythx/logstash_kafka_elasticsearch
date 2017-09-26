@@ -129,11 +129,10 @@ public class AppTest {
 		}
 	}
 	@Test
-	@Ignore
 	public void testAccAvgJob() {
 		try {
 			Properties props = new Properties();
-			props.setProperty("schedule.job.accAvgJobCron", "0/5 * * * * ?");
+			props.setProperty("schedule.job.accAvgJobCron", "0/5 * * * * ? *");
 			MyScheduler.getInstance(props).registerAccAvgJob().start();
 			Thread.sleep(1000000);
 		} catch (Exception e) {

@@ -64,7 +64,7 @@
   </dependencies>
   <properties>
     <jettyVersion>9.3.9.v20160517</jettyVersion>
-    <env>production</env>
+    <env>development</env>
     <junitVersion>4.12</junitVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

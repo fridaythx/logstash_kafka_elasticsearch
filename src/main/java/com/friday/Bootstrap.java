@@ -18,10 +18,10 @@ public class Bootstrap {
         printAppProps();
         startWorkerThread();
         LOG.info("WorkerThread started...");
-        startHttpServerListener();
-        LOG.info("HTTPServer listener started...");
         startScheduler();
         LOG.info("Scheduler started...");
+        startHttpServerListener();
+        LOG.info("HTTPServer listener started...");
     }
 
     private static void startWorkerThread() {
