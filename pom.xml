@@ -12,8 +12,8 @@
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/org/eclipse/jetty/jetty-maven-plugin/ -->
 		<jettyVersion>9.3.9.v20160517</jettyVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- <env>production</env> -->
-		<env>development</env>
+		<env>production</env>
+		<!-- <env>development</env> -->
 	</properties>
 	<dependencies>
 		<dependency>
