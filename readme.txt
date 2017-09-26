@@ -28,16 +28,26 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-repli
 elasticsearch
 start esearch
 nohup bin/elasticsearch > my_esearch.log &
-ulimit -n 65536
-or
-/etc/security/limits.conf
 
-check max_file_descriptors
-curl -XGET 'localhost:9200/_nodes/stats/process?filter_path=**.max_file_descriptors&pretty'
+---------------
+append below text to /etc/sysctl.conf 
+vm.max_map_count=262144
+sudo sysctl -p
 
-setting number of threads
-/etc/security/limits.conf
-nproc
+append below text to /etc/security/limits.conf
+*    soft nofile 65536
+*    hard nofile 65536
+root soft nofile 65536
+root hard nofile 65536
+
+
+/etc/pam.d/common-session
+session required pam_limits.so
+
+/etc/pam.d/common-session-noninteractive
+session required pam_limits.so
+
+-------------
 
 
 elasticsearch_head_plugin
@@ -50,3 +60,49 @@ npm start
 Run chmod +x ./startup.sh && ./startup.sh to start this java program.
 
 Setting JAVA and MAVEN env variables manually may be necessary for you to run this program.
+
+
+
+
+curl -XGET 'localhost:9200/_template/logstash_1?pretty'
+
+curl -XDELETE 'localhost:9200/_template/logstash_1?pretty'
+
+
+curl -XPUT 'localhost:9200/_template/logstash_1?pretty' -H 'Content-Type: application/json' -d'
+{
+    "template": "logstash-*",
+    "order": 1,
+    "mappings": {
+        "_default_": {
+            "_all": {
+                "enabled": true,
+                "omit_norms": true
+            },
+            "dynamic_templates": [
+                {
+                    "message_field": {
+                        "path_match": "message",
+                        "mapping": {
+                            "norms": false,
+                            "type": "text"
+                        },
+                        "match_mapping_type": "string"
+                    }
+                },
+                {
+                    "string_fields": {
+                        "mapping": {
+                            "type": "string",
+                            "index": "not_analyzed",
+                            "doc_values": true
+                        },
+                        "match_mapping_type": "string",
+                        "match": "*"
+                    }
+                }
+            ]
+        }
+    }
+}
+'

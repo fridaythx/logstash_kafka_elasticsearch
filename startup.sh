@@ -21,7 +21,7 @@ done
 if [ -n "$doRun" ];
 then
     echo "run. ${doRUn}"
-    mvn clean package	
+    mvn -Dmaven.test.skip=true clean package	
     nohup java -jar ./target/log-filter-1.0-SNAPSHOT.jar &
 fi
 

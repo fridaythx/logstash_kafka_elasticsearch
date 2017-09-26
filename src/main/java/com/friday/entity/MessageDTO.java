@@ -1,18 +1,17 @@
-package com.friday.entity.dto;
+package com.friday.entity;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class MessageDTO {
 	private String type;
     private short severity;
     private short facility;
     private short priority;
-    private Timestamp timestamp;
+    private Date timestamp;
     private String severityLabel;
     private String facilityLabel;
     private String host;
     private String message;
-    private String logsource;
 
     /**
      * @param severity the severity to set
@@ -59,14 +58,14 @@ public class MessageDTO {
     /**
      * @param timestamp the timestamp to set
      */
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
     /**
      * @return the timestamp
      */
-    public Timestamp getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
@@ -124,20 +123,6 @@ public class MessageDTO {
      */
     public String getMessage() {
         return message;
-    }
-
-    /**
-     * @param logsource the logsource to set
-     */
-    public void setLogsource(String logsource) {
-        this.logsource = logsource;
-    }
-
-    /**
-     * @return the logsource
-     */
-    public String getLogsource() {
-        return logsource;
     }
 
 	public String getType() {

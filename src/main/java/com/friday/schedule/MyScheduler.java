@@ -65,7 +65,7 @@ public class MyScheduler {
         JobDetail job = newJob(AccAvgJob.class).withIdentity("job2", "group1").build();
         job.getJobDataMap().put("appProps", properties);
         Trigger trigger = newTrigger().withIdentity("trigger2", "group1").startNow()
-                .withSchedule(cronSchedule(properties.getProperty("schedule.job.accAvgJobCron", "0 0 * * * ? *")))
+                .withSchedule(cronSchedule(properties.getProperty("schedule.job.accAvgJobCron", "0/5 * * * * ? *")))
                 .forJob(job).build();
         try {
             _scheduler.scheduleJob(job, trigger);

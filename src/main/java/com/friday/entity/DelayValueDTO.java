@@ -1,4 +1,4 @@
-package com.friday.entity.dto;
+package com.friday.entity;
 
 public class DelayValueDTO {
 	private String toVsDelayVal;

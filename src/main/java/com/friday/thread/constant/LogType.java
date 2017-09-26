@@ -1,17 +1,13 @@
 package com.friday.thread.constant;
 
-public class LogType {
-    public static final String SYSTEM_LOG = "system";
-
-    public static final String LTM_LOG = "ltm";
-
-    public static final String GTM_LOG = "gtm";
-
-    public static final String AUDIT_LOG = "audit";
-
-    public static final String UNRECOGNIZED = "unrecognized";
-    
-    public static final String COMMON_LOG_LIKE = "common_log_like";
-    
-    public static final String DELAY_LOG_LIKE = "delay_log_like";
+public enum LogType {
+	SYSTEM_LOG(3),LTM_LOG(4),GTM_LOG(2),AUDIT_LOG(11),UNRECOGNIZED(-1),COMMON_LOG_LIKE(-1),DELAY_LOG_LIKE(-2);
+	private Short code;
+	private LogType(Integer code) {
+		this.code = code.shortValue();
+	}
+	
+	public Short getCode() {
+		return code;
+	}
 }

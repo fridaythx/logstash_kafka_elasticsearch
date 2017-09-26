@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.friday.dal.mapper.LogMapper">
+	<resultMap id="log" type="com.friday.entity.output.Log">
+		<result property="fid" column="fid" />
+		<result property="fLevel" column="fLevel" />
+		<result property="fFacility" column="fFacility" />
+		<result property="fCount" column="fCount" />
+		<result property="fStartTime" column="fStartTime" />
+		<result property="fLastTime" column="fLastTime" />
+        <result property="fEndTime" column="fEndTime" />
+        <result property="fStatus" column="fStatus" />
+        <result property="fContent" column="fContent" />
+        <result property="fType" column="fType" />
+        <result property="devId" column="devId" />
+	</resultMap>
+	<sql id="queryDevIp"></sql>
+	<select id="selectCount" resultType="long">
+		select count(*) from F_FLog;
+	</select>
+	<select id="queryDevIdByDevIp" parameterType="string" resultType="long">
+		select devId from F_DeviceInfo where devIP = #{devIP}
+	</select>
+    <insert id="insert" parameterType="log" useGeneratedKeys="true" keyProperty="fid">
+        insert into F_FLog(fid,fLevel,fFacility,fCount,fStartTime,fLastTime,fEndTime,fStatus,fContent,fType,devId) 
+        values(#{fid},#{fLevel},#{fFacility},#{fCount},#{fStartTime},#{fLastTime},#{fEndTime},#{fStatus},#{fContent},#{fType},#{devId})
+    </insert>
+    <update id="update" parameterType="hashmap">
+    		update F_FLog set fCount=#{fCount},fLastTime=#{fLastTime},fEndTime=#{fEndTime} where 
+    		<![CDATA[
+    			fLastTime > #{startTime} and fLastTime < #{endTime} 
+    		]]>
+    		and devId = #{devId} and fContent = #{content}
+    </update>
+</mapper>

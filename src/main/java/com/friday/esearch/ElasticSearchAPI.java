@@ -3,10 +3,12 @@ package com.friday.esearch;
 import java.util.List;
 import java.util.Map;
 
-import com.friday.entity.dto.DelayValueDTO;
+import com.friday.entity.DelayValueDTO;
+import com.friday.entity.Keyword;
+import com.friday.entity.KeywordCount;
 
 public interface ElasticSearchAPI {
-	public long countKeyword(String key, String value) throws Exception;
+	public KeywordCount countKeyword(Keyword ...keyword) throws Exception;
 
-	public List<DelayValueDTO> queryByCondition(Map<String, Object> con,String ...indices) throws Exception;
+	public Map<String,List<DelayValueDTO>> queryByCondition(Map<String, Object> con,String ...indices) throws Exception;
 }

@@ -1,8 +1,10 @@
-package com.friday.thread.dispatcher;
+package com.friday.thread.dispatcher.impl;
 
 import com.friday.thread.TaskSource;
+import com.friday.thread.dispatcher.TaskDispatch;
 import com.friday.thread.task.AlertTask;
 import com.friday.thread.task.DatabaseOpTask;
+import com.friday.thread.task.NotifyDelayValTask;
 import com.friday.thread.task.PreLogicTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,6 +27,10 @@ public class AsyncTaskDispatch implements TaskDispatch {
 	public void addDbOpTask(TaskSource taskSrc) {
 		executorService.execute(new DatabaseOpTask(taskSrc));
 	}
+	
+	public void addNotifyDelayValTask(TaskSource taskSrc) {
+		executorService.execute(new NotifyDelayValTask(taskSrc));
+	}
 
 	public void dispatchTask(TaskSource taskSrc) throws RuntimeException {
 		switch (taskSrc.getTaskType()) {
@@ -36,7 +42,9 @@ public class AsyncTaskDispatch implements TaskDispatch {
 			break;
 		case DbOpTask:
 			addDbOpTask(taskSrc);
-		case DelayTask:
+			break;
+		case DelayValueNotifyTask:
+			addNotifyDelayValTask(taskSrc);
 			break;
 		}
 		LOG.info(String.format("Dispatched task successfully, taskType [%s]", taskSrc.getTaskType().toString()));

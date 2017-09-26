@@ -1,6 +1,7 @@
 package com.friday.schedule.job;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,15 +13,33 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.friday.entity.dto.DelayValueDTO;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.friday.entity.DelayValueDTO;
 import com.friday.esearch.ElasticSearchAPI;
 import com.friday.esearch.impl.ElasticSearchAPIImpl;
-import com.friday.thread.constant.LogType;
-import com.friday.thread.dispatcher.AsyncTaskDispatch;
+import com.friday.thread.TaskSource;
+import com.friday.thread.constant.LogSearchType;
+import com.friday.thread.constant.MessageDefinition;
+import com.friday.thread.constant.TaskType;
 import com.friday.thread.dispatcher.TaskDispatch;
+import com.friday.thread.dispatcher.impl.AsyncTaskDispatch;
 
 public class AccAvgJob implements org.quartz.Job {
 	private static final Logger LOG = LoggerFactory.getLogger(AccAvgJob.class);
+
+	private static final String KEY_ROOT = "data";
+
+	private static final String KEY_CLIENT_TO_VS = "clientToVs";
+
+	private static final String KEY_VS_TO_SERVER = "vsToServer";
+
+	private static final String KEY_TIME = "time";
+
+	private static final String KEY_DEV_IP = "devIp";
+	private static final String KEY_IP_PORT = "ipPort";
+	private static final String KEY_DELAY_TIMES = "delayTimes";
+
 	private ElasticSearchAPI elasticSearchAPI = new ElasticSearchAPIImpl();
 	private TaskDispatch taskDispatch = new AsyncTaskDispatch();
 
@@ -32,11 +51,33 @@ public class AccAvgJob implements org.quartz.Job {
 		Properties appProps = (Properties) context.getJobDetail().getJobDataMap().get("appProps");
 		String delayTimeInSec = appProps.getProperty("schedule.job.accAvgJob.delayTimeInSec", "5");
 		Map<String, Object> con = new HashMap<String, Object>();
-		con.put("searchType", LogType.DELAY_LOG_LIKE);
+		con.put("searchType", LogSearchType.DELAY_LOG_LIKE.getCode());
 		con.put("dateRangeFrom", "now-" + delayTimeInSec + "s");
 		con.put("dateRangeTo", "now");
 		try {
-			List<DelayValueDTO> list = elasticSearchAPI.queryByCondition(con);
+			Map<String, List<DelayValueDTO>> queryByCondition = elasticSearchAPI.queryByCondition(con);
+
+			JSONObject rs = calcEachHostDelayValue(queryByCondition);
+
+			TaskSource taskSrc = new TaskSource(TaskType.DelayValueNotifyTask);
+			taskSrc.setTaskEntity(rs);
+			taskDispatch.dispatchTask(taskSrc);
+		} catch (Exception e) {
+			LOG.error(MessageDefinition.UNEXPECTED_ERROR.appendDesc("While calculating the delayVal."), e);
+		}
+
+		// 即收集5秒内传过来的延时值，然后去除头尾2%，取中间96%做平均，延时按收到的日志格式收集client到vs和vs到所有server的延时，前者以vs的ip+port为索引，后者以vs和member的ip+port为索引
+
+	}
+
+	private JSONObject calcEachHostDelayValue(Map<String, List<DelayValueDTO>> listMap) {
+		JSONObject jsonObject = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		Date now = new Date();
+		jsonObject.put(KEY_ROOT, jsonArray);
+		for (Entry<String, List<DelayValueDTO>> entry : listMap.entrySet()) {
+			JSONObject hostDelayValue = new JSONObject();
+			List<DelayValueDTO> list = entry.getValue();
 			LOG.info("list[{}] : {}", list.size(), list);
 			// 去hits 2%
 			list = strip(list);
@@ -45,18 +86,29 @@ public class AccAvgJob implements org.quartz.Job {
 			LOG.info("vsAvgValue : {}", vsAvgValue);
 			Map<String, Double> serverAvgValue = calcServerDelayAvgValue(list);
 			LOG.info("serverAvgValue : {}", serverAvgValue);
-			// TaskSource taskSrc = new TaskSource(TaskType.PreLogicTask);
-			// taskDispatch.dispatchTask(taskSrc);
-		} catch (Exception e) {
-			LOG.error("Failed", e);
+			hostDelayValue.put(KEY_DEV_IP, entry.getKey());
+			hostDelayValue.put(KEY_TIME, now);
+			hostDelayValue.put(KEY_CLIENT_TO_VS, transformForDataMapping(vsAvgValue));
+			hostDelayValue.put(KEY_VS_TO_SERVER, transformForDataMapping(serverAvgValue));
+			jsonArray.add(hostDelayValue);
 		}
 
-		// 即收集5秒内传过来的延时值，然后去除头尾2%，取中间96%做平均，延时按收到的日志格式收集client到vs和vs到所有server的延时，前者以vs的ip+port为索引，后者以vs和member的ip+port为索引
+		return jsonObject;
+	}
 
+	private Object transformForDataMapping(Map<String, Double> map) {
+		JSONArray jsonArray = new JSONArray();
+		for (Entry<String, Double> entry : map.entrySet()) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put(KEY_IP_PORT, entry.getKey());
+			jsonObject.put(KEY_DELAY_TIMES, entry.getValue());
+			jsonArray.add(jsonObject);
+		}
+		return jsonArray;
 	}
 
 	public List<DelayValueDTO> strip(List<DelayValueDTO> list) {
-		// do not strip the list if the len of the list is less than 50
+		// do not strip the list if the length of the list is less than 50
 		if (list.size() < 50) {
 			return list;
 		}
@@ -97,7 +149,7 @@ public class AccAvgJob implements org.quartz.Job {
 	public Map<String, Double> calcServerDelayAvgValue(List<DelayValueDTO> list) {
 		Map<String, List<DelayValueDTO>> temp = new HashMap<String, List<DelayValueDTO>>();
 		for (DelayValueDTO delayValueDTO : list) {
-			String key = delayValueDTO.getVsAddress() + delayValueDTO.getServerAddress();
+			String key = delayValueDTO.getVsAddress() + "|" + delayValueDTO.getServerAddress();
 			if (!temp.containsKey(key)) {
 				temp.put(key, new ArrayList<DelayValueDTO>());
 			}

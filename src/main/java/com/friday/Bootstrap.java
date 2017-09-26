@@ -43,7 +43,7 @@ public class Bootstrap {
 
     private static void startScheduler() {
         try {
-            MyScheduler.getInstance(appProps).registerDataCleanJob().start();
+            MyScheduler.getInstance(appProps).registerDataCleanJob().registerAccAvgJob().start();
         } catch (Exception e) {
             LOG.error("Failed to start scheduler.", e);
         }

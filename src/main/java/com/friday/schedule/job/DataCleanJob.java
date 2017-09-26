@@ -15,7 +15,7 @@ import com.friday.esearch.impl.ElasticSearchAdminAPIImpl;
 public class DataCleanJob implements org.quartz.Job {
 	private static final Logger LOG = LoggerFactory.getLogger(DataCleanJob.class);
 
-	private static final String prefix = "logstash-";
+	private static final String PREFIX = "logstash-";
 
 	private ElasticSearchAdminAPI elasticSearchAdminAPI = new ElasticSearchAdminAPIImpl();
 
@@ -31,7 +31,7 @@ public class DataCleanJob implements org.quartz.Job {
 		Calendar nowTime = Calendar.getInstance();
 		nowTime.add(Calendar.DAY_OF_MONTH, -Integer.parseInt(keepDays));
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
-		String indexName = prefix + simpleDateFormat.format(nowTime.getTime());
+		String indexName = PREFIX + simpleDateFormat.format(nowTime.getTime());
 		LOG.info("IndexName {} to be deleted",indexName);
 		try {
 			elasticSearchAdminAPI.deleteIndexByName(indexName);
