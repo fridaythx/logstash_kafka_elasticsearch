@@ -31,7 +31,7 @@ public class BasicLogicWorker implements Runnable, DelegatingMessageHandle {
 					consumer.consume();
 				} catch (Exception e) {
 					LOG.error("Unexpected error occurred during consuming records", e);
-					consumer.stop();
+					stop();
 				}
 			}
 		} catch (Exception e) {
