@@ -1,7 +1,5 @@
 package com.friday.thread.task;
 
-import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +14,13 @@ import com.friday.thread.TaskSource;
 import com.friday.thread.constant.LogType;
 import com.friday.thread.constant.TaskType;
 import com.friday.thread.dispatcher.TaskDispatcher;
+import com.friday.utils.DateUtil;
 
 /**
  * 预处理任务 首先执行完毕后会分发其他三种类型的任务
+ * 
+ * @author Friday
+ *
  */
 public class PreLogicTask extends BasicTask {
 	private static final Logger LOG = LoggerFactory.getLogger(PreLogicTask.class);
@@ -46,15 +48,13 @@ public class PreLogicTask extends BasicTask {
 		}
 
 		Log log = new Log();
-		log.setfLevel((short)(messageDTO.getSeverity() + 1));
+		log.setfLevel((short) (messageDTO.getSeverity() + 1));
 		log.setDevIP(messageDTO.getHost());
-		log.setfContent(messageDTO.getMessage());
-		log.setfEndTime(new Date());
+		log.setfEndTime(messageDTO.getTimestamp());
 		log.setfLastTime(log.getfEndTime());
 		log.setfFacility(messageDTO.getFacility());
-		log.setfStatus((short)1);
+		log.setfStatus((short) 1);
 		log.setfContent(messageDTO.getMessage());
-		log.setfLastTime(messageDTO.getTimestamp());
 		// determining the type of the log.
 		if (matchSystemLog(messageDTO)) {
 			log.setfType(LogType.SYSTEM_LOG.getCode());
@@ -70,21 +70,29 @@ public class PreLogicTask extends BasicTask {
 
 		try {
 			// query all log messages that are repeated any times in recent one hour.
-			KeywordCount countKeyword = elasticSearchAPI.countKeyword(new Keyword("fullContent.keyword", messageDTO.getMessage()),
-					new Keyword("host.keyword", messageDTO.getHost()), new Keyword("dateRangeFrom", "now-1h"),
-					new Keyword("dateRangeTo", "now"));
-			log.setfCount((int)(countKeyword.getCount() == 0 ? 1 : countKeyword.getCount()));
-			log.setfStartTime(countKeyword.getStartTime());
+			KeywordCount countKeyword = elasticSearchAPI.countKeyword(
+					new Keyword("fullContent.keyword", messageDTO.getMessage()),
+					new Keyword("host.keyword", messageDTO.getHost()),
+					new Keyword("dateRangeFrom",
+							DateUtil.date2Utc(DateUtil.calc(messageDTO.getTimestamp(), DateUtil.FIELD_HOUR, -1))),
+					new Keyword("dateRangeTo", DateUtil.date2Utc(messageDTO.getTimestamp())));
+			log.setfCount((int) (countKeyword.getCount() == 0 ? 1 : countKeyword.getCount()));
+			if (countKeyword.getStartTime() == null) {
+				log.setfStartTime(messageDTO.getTimestamp());
+			} else {
+				log.setfStartTime(countKeyword.getStartTime());
+			}
+
 			TaskSource newTaskSource = new TaskSource(taskSrc.getSource(), TaskType.DbOpTask,
 					taskSrc.getTaskDispatcher());
-			
+
 			newTaskSource.setTaskEntity(log);
 			taskDispatcher.dispatchTaskSync(newTaskSource);
 		} catch (Exception e) {
 			LOG.error("An error occurred during using elasticsearch.", e);
 			throw new RuntimeException("An error occurred during using elasticsearch.");
 		}
-		
+
 		if (messageDTO.getSeverity() >= 0 && messageDTO.getSeverity() <= 3) {
 			// dispatchAlertTask
 			TaskSource newTaskSource = new TaskSource(taskSrc.getSource(), TaskType.AlertTask,

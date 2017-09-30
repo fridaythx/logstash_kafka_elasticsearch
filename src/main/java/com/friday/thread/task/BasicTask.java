@@ -9,6 +9,11 @@ import com.friday.App;
 import com.friday.thread.TaskSource;
 import com.friday.utils.PropertiesUtil;
 
+/**
+ * 任务基类
+ * @author Friday
+ *
+ */
 public abstract class BasicTask implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(BasicTask.class);
 	
@@ -29,12 +34,12 @@ public abstract class BasicTask implements Runnable {
         LOG.info(String.format("[%s] Task ended, %d ms used.", taskSrc.getTaskType(), endTime - startTime));
     }
 
-    public void onStart() {
+    private void onStart() {
         this.startTime = System.currentTimeMillis();
         beforeTaskRun();
     }
 
-    public void onEnd() {
+    private void onEnd() {
         this.endTime = System.currentTimeMillis();
         afterTaskRun();
     }

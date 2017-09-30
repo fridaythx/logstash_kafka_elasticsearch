@@ -17,6 +17,8 @@ import com.friday.utils.HttpUtil;
 
 /**
  * 落库任务
+ * @author Friday
+ *
  */
 public class DatabaseOpTask extends BasicTask {
 	private static final Logger LOG = LoggerFactory.getLogger(DatabaseOpTask.class);
@@ -36,10 +38,10 @@ public class DatabaseOpTask extends BasicTask {
 			JSONObject root = new JSONObject();
 			if (log.getfCount() > 1) {
 				JSONObject json = (JSONObject) JSON.toJSON(log);
-				Date now = log.getfEndTime();
-				Date date60mAgo = DateUtil.calc(now, DateUtil.FIELD_HOUR, -1);
-				json.put("startTime", date60mAgo);
-				json.put("endTime", now);
+				Date endTime = log.getfEndTime();
+				Date endTime60mAgo = DateUtil.calc(endTime, DateUtil.FIELD_HOUR, -1);
+				json.put("startTime", endTime60mAgo);
+				json.put("endTime", endTime);
 				root.put("data", json);
 				LOG.info("Update log");
 				LOG.info("Request body : {}\n", JSON.toJSONStringWithDateFormat(root, "yyyy-MM-dd HH:mm:ss"),

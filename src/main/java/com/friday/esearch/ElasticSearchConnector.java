@@ -14,6 +14,11 @@ import org.slf4j.LoggerFactory;
 import com.friday.App;
 import com.friday.utils.PropertiesUtil;
 
+/**
+ * Elasticsearch 连接器
+ * @author Friday
+ *
+ */
 public class ElasticSearchConnector {
 	private static final Logger LOG = LoggerFactory.getLogger(ElasticSearchConnector.class);
 	private TransportClient client;

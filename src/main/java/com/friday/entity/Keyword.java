@@ -1,5 +1,10 @@
 package com.friday.entity;
 
+/**
+ * 查询关键字
+ * @author Friday
+ *
+ */
 public class Keyword {
 	private String keyword;
 

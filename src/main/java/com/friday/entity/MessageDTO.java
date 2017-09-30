@@ -2,6 +2,11 @@ package com.friday.entity;
 
 import java.util.Date;
 
+/**
+ * 消息转换实体
+ * @author Friday
+ *
+ */
 public class MessageDTO {
 	private String type;
     private short severity;

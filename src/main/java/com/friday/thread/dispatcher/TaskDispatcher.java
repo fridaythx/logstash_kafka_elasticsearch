@@ -5,6 +5,10 @@ import com.friday.thread.dispatcher.impl.AsyncTaskDispatch;
 import com.friday.thread.dispatcher.impl.SyncTaskDispatch;
 
 public class TaskDispatcher {
+	
+	private TaskDispatcher() {
+	}
+	
     private TaskDispatch asyncTaskDispatch = new AsyncTaskDispatch();
 
     private TaskDispatch syncTaskDispatch = new SyncTaskDispatch();
@@ -15,5 +19,11 @@ public class TaskDispatcher {
 
     public void dispatchTaskSync(TaskSource taskSrc) throws RuntimeException {
         syncTaskDispatch.dispatchTask(taskSrc);
+    }
+    
+    private static TaskDispatcher instance = new TaskDispatcher(); 
+    
+    public static synchronized TaskDispatcher getSingleton() {
+    		return instance;
     }
 }

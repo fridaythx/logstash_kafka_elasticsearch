@@ -11,6 +11,11 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.friday.App;
 import com.friday.utils.PropertiesUtil;
 
+/**
+ * MyBatis SqlSession工厂
+ * @author Friday
+ *
+ */
 public class SqlSessionFactory {
 	private static SqlSessionFactory factory;
 	private static org.apache.ibatis.session.SqlSessionFactory _factory;

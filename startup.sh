@@ -1,27 +1,26 @@
 #!/bin/bash
 
-doTest="true"
+env="dev"
 
-
-while getopts "tr" opts
+while getopts "trp" opts
 do
     case $opts in
     t)
         echo "do test."
-        doTest="false"
-	mvn clean test
-	exit
+		mvn clean test
         ;;
     r)
         echo "do run."
-        doRun="true"
+		mvn -Dmaven.test.skip=true clean package && nohup java -jar ./target/log-filter-1.0-SNAPSHOT.jar &
         ;;
+	p)
+		echo "do package prd version."
+		mvn -Dmaven.test.skip=true -Pprd clean package
+		;;
+	e)
+		echo "do package dev version."
+		mvn -Dmaven.test.skip=true -Pdev clean package
+		;;
     esac
 done
-if [ -n "$doRun" ];
-then
-    echo "run. ${doRUn}"
-    mvn -Dmaven.test.skip=true clean package	
-    nohup java -jar ./target/log-filter-1.0-SNAPSHOT.jar &
-fi
-
+echo "done"

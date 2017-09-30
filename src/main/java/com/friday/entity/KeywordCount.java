@@ -2,6 +2,11 @@ package com.friday.entity;
 
 import java.util.Date;
 
+/**
+ * 查询结果
+ * @author Friday
+ *
+ */
 public class KeywordCount {
 	private long count;
 	

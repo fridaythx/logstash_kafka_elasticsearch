@@ -17,7 +17,11 @@ import java.util.Properties;
 import static org.quartz.CronScheduleBuilder.*;
 import org.quartz.JobDetail;
 
-
+/**
+ * 初始化&定时任务注册
+ * @author Friday
+ *
+ */
 public class MyScheduler {
     private static final Logger LOG = LoggerFactory.getLogger(MyScheduler.class);
     private static MyScheduler scheduler;
@@ -30,7 +34,7 @@ public class MyScheduler {
 
     }
 
-    public static MyScheduler getInstance(Properties properties) throws Exception {
+    public static synchronized MyScheduler getInstance(Properties properties) throws Exception {
         if (scheduler == null) {
             scheduler = new MyScheduler();
             scheduler.properties = properties;

@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory;
 import com.friday.esearch.ElasticSearchAdminAPI;
 import com.friday.esearch.impl.ElasticSearchAdminAPIImpl;
 
+/**
+ * 清理Elasticsearch索引定时任务
+ * @author Friday
+ *
+ */
 public class DataCleanJob implements org.quartz.Job {
 	private static final Logger LOG = LoggerFactory.getLogger(DataCleanJob.class);
 

@@ -13,6 +13,11 @@ import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Kafka 消息消费者
+ * @author Friday
+ *
+ */
 public class MessageConsumer {
     private static final Logger LOG = LoggerFactory.getLogger(MessageConsumer.class);
 
@@ -38,7 +43,7 @@ public class MessageConsumer {
     }
 
     public void consume() {
-        ConsumerRecords<String, String> records = consumer.poll(100);
+        ConsumerRecords<String, String> records = consumer.poll(1000);
         if (records.count() > 0) {
             LOG.info("Batch of records size : {}", records.count());
             for (TopicPartition partition : records.partitions()) {

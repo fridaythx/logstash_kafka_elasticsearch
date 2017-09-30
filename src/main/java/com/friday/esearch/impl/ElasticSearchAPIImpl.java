@@ -1,7 +1,6 @@
 package com.friday.esearch.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class ElasticSearchAPIImpl implements ElasticSearchAPI {
 			Map<String, Object> source = searchHit.getSource();
 			keywordCount.setStartTime(DateUtil.utc2Date((String) source.get("@timestamp")));
 		} else {
-			keywordCount.setStartTime(new Date());
+			keywordCount.setStartTime(null);
 		}
 		LOG.info("Search hits {}", keywordCount.getCount());
 		LOG.info("First start time : {}", keywordCount.getStartTime());

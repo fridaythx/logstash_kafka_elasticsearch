@@ -5,6 +5,11 @@ import com.friday.consumer.Message;
 import com.friday.thread.constant.TaskType;
 import com.friday.thread.dispatcher.TaskDispatcher;
 
+/**
+ * 任务实体
+ * @author Friday
+ *
+ */
 public class TaskSource{
     private TaskType taskType;
 

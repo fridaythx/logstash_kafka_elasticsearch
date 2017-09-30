@@ -6,6 +6,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 查看耗时工具类
+ * @author Friday
+ *
+ */
 public class CheckUtil {
 	private static final Logger LOG = LoggerFactory.getLogger(CheckUtil.class);
 	private static ThreadLocal<Map<String, Long>> temp = new ThreadLocal<Map<String, Long>>();

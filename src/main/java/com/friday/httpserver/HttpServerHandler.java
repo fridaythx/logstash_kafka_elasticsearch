@@ -9,6 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+/**
+ * 处理HTTP请求
+ * @author Friday
+ *
+ */
 public class HttpServerHandler extends AbstractHandler {
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {

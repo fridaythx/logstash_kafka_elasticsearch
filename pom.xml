@@ -12,8 +12,6 @@
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/org/eclipse/jetty/jetty-maven-plugin/ -->
 		<jettyVersion>9.3.9.v20160517</jettyVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<env>production</env>
-		<!-- <env>development</env> -->
 	</properties>
 	<dependencies>
 		<dependency>
@@ -135,4 +133,18 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>development</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>prd</id>
+			<properties>
+				<env>production</env>
+			</properties>
+		</profile>
+	</profiles>
 </project>

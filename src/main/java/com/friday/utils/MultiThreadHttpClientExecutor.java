@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * HTTP Client 连接池
  * Thread-safe pooled HTTP executor
  * 
  * @author Friday

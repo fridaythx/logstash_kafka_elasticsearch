@@ -5,7 +5,7 @@ import java.util.Map;
 import com.friday.entity.output.Log;
 
 /**
- * Log mapper used to deal with db operation.
+ * Log mapper used to deal with db operations.
  * 
  * @author Friday
  *

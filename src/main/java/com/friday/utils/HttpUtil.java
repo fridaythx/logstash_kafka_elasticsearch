@@ -19,6 +19,11 @@ import org.eclipse.jetty.http.HttpHeader;
 
 import com.alibaba.fastjson.JSON;
 
+/**
+ * HTTP工具类
+ * @author Friday
+ *
+ */
 public class HttpUtil {
 	public static final String HTTP_HEADER_USER_AGENT = HttpHeader.USER_AGENT.asString();
 	

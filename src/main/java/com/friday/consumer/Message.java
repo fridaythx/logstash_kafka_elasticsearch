@@ -2,6 +2,11 @@ package com.friday.consumer;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+/**
+ * Kafka 消息实体
+ * @author Friday
+ *
+ */
 public class Message {
 
     private ConsumerRecord<String,String> record;

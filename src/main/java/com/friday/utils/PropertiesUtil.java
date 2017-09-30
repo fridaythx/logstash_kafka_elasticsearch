@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * 应用配置读取工具类
+ * @author Friday
+ *
+ */
 public class PropertiesUtil {
 	private static Map<String, Properties> store = new HashMap<String, Properties>();
 

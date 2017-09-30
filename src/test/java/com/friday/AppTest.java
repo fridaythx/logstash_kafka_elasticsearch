@@ -53,9 +53,9 @@ public class AppTest {
 		try {
 			ElasticSearchAPI api = new ElasticSearchAPIImpl();
 			api.countKeyword(new Keyword("fullContent.keyword",
-					"info logger: [ssl_req][16/Sep/2017:19:04:19 -0700] 127.0.0.1 TLSv1 RC4-SHA \"/iControl/iControlPortal.cgi\" 626\n"),
-					new Keyword("dateRangeFrom", "now-1h"), new Keyword("dateRangeTo", "now"));
-
+					"debug mcpd[6508]: 01070468:7: eXtremeDB free pages: 61798, total pages: 146912, page_size: 128\n"),
+					new Keyword("dateRangeFrom", DateUtil.date2Utc(DateUtil.calc(new Date(), DateUtil.FIELD_HOUR, -2))),
+					new Keyword("dateRangeTo", DateUtil.date2Utc(DateUtil.calc(new Date(), DateUtil.FIELD_HOUR, -1))));
 			ElasticSearchConnector.getSingletonInstance().disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,10 +110,10 @@ public class AppTest {
 		assert true != "Delay 10 10 127.0.0.1 127.0.0.1".matches("(?!Delay).*");
 		assert true == "Aug 12:00:00".matches("(?!Delay).*");
 	}
-	
+
 	@Test
 	@Ignore
-	
+
 	public void testRangeSearch() {
 		try {
 			ElasticSearchAPI elasticSearchAPI = new ElasticSearchAPIImpl();
@@ -128,7 +128,9 @@ public class AppTest {
 			throw new RuntimeException("failed.");
 		}
 	}
+
 	@Test
+	@Ignore
 	public void testAccAvgJob() {
 		try {
 			Properties props = new Properties();
@@ -168,7 +170,7 @@ public class AppTest {
 			log.setfLastTime(new Timestamp(System.currentTimeMillis()));
 			log.setfFacility((short) 1);
 			log.setfLevel(LogLevel.DEBUG.getCode());
-			log.setfStatus((short)1);
+			log.setfStatus((short) 1);
 			log.setfType(LogType.AUDIT_LOG.getCode());
 			mapper.insert(log);
 			System.out.println("id:" + log.getFid());
@@ -227,7 +229,7 @@ public class AppTest {
 	@Test
 	@Ignore
 	public void testFlow() {
-		TaskDispatcher dispatcher = new TaskDispatcher();
+		TaskDispatcher dispatcher = TaskDispatcher.getSingleton();
 		TaskSource taskSrc = new TaskSource(new Message(null) {
 			@Override
 			public String getContent() {
@@ -249,7 +251,7 @@ public class AppTest {
 		}, TaskType.PreLogicTask, dispatcher);
 		dispatcher.dispatchTaskSync(taskSrc);
 	}
-	
+
 	@Test
 	@Ignore
 	public void testGetUTC() {
@@ -260,6 +262,6 @@ public class AppTest {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 }

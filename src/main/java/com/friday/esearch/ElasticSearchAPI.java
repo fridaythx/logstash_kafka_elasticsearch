@@ -7,6 +7,11 @@ import com.friday.entity.DelayValueDTO;
 import com.friday.entity.Keyword;
 import com.friday.entity.KeywordCount;
 
+/**
+ * Elasticsearch 查询
+ * @author Friday
+ *
+ */
 public interface ElasticSearchAPI {
 	public KeywordCount countKeyword(Keyword ...keyword) throws Exception;
 

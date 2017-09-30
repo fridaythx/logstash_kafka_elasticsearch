@@ -3,6 +3,11 @@ package com.friday.entity.output;
 import java.sql.Timestamp;
 import java.util.Date;
 
+/**
+ * Log实体
+ * @author Friday
+ *
+ */
 public class Log {
 	private Long fid;
 	private Short fLevel;

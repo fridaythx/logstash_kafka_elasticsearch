@@ -25,6 +25,11 @@ import com.friday.thread.constant.TaskType;
 import com.friday.thread.dispatcher.TaskDispatch;
 import com.friday.thread.dispatcher.impl.AsyncTaskDispatch;
 
+/**
+ * 计算延时定时任务
+ * @author Friday
+ *
+ */
 public class AccAvgJob implements org.quartz.Job {
 	private static final Logger LOG = LoggerFactory.getLogger(AccAvgJob.class);
 
@@ -58,10 +63,14 @@ public class AccAvgJob implements org.quartz.Job {
 			Map<String, List<DelayValueDTO>> queryByCondition = elasticSearchAPI.queryByCondition(con);
 
 			JSONObject rs = calcEachHostDelayValue(queryByCondition);
-
-			TaskSource taskSrc = new TaskSource(TaskType.DelayValueNotifyTask);
-			taskSrc.setTaskEntity(rs);
-			taskDispatch.dispatchTask(taskSrc);
+			
+			if(!rs.getJSONArray(KEY_ROOT).isEmpty()) {
+				TaskSource taskSrc = new TaskSource(TaskType.DelayValueNotifyTask);
+				taskSrc.setTaskEntity(rs);
+				taskDispatch.dispatchTask(taskSrc);	
+			}else {
+				LOG.info("Skip empty dealy value data set.");
+			}
 		} catch (Exception e) {
 			LOG.error(MessageDefinition.UNEXPECTED_ERROR.appendDesc("While calculating the delayVal."), e);
 		}

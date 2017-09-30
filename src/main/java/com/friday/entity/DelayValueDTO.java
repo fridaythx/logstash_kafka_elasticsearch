@@ -1,5 +1,10 @@
 package com.friday.entity;
 
+/**
+ * 延时消息实体
+ * @author Friday
+ *
+ */
 public class DelayValueDTO {
 	private String toVsDelayVal;
 	

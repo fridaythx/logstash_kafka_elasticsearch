@@ -8,6 +8,11 @@ import com.friday.thread.TaskSource;
 import com.friday.thread.constant.MessageDefinition;
 import com.friday.utils.HttpUtil;
 
+/**
+ * 延时数据同步任务
+ * @author Friday
+ *
+ */
 public class NotifyDelayValTask extends BasicTask {
 	private static final Logger LOG = LoggerFactory.getLogger(NotifyDelayValTask.class);
 
