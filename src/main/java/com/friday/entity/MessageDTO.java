@@ -17,6 +17,7 @@ public class MessageDTO {
     private String facilityLabel;
     private String host;
     private String message;
+    private String fullContent;
 
     /**
      * @param severity the severity to set
@@ -136,5 +137,13 @@ public class MessageDTO {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getFullContent() {
+		return fullContent;
+	}
+
+	public void setFullContent(String fullContent) {
+		this.fullContent = fullContent;
 	}
 }

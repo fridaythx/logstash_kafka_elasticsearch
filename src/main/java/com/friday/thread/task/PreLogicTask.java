@@ -54,7 +54,12 @@ public class PreLogicTask extends BasicTask {
 		log.setfLastTime(log.getfEndTime());
 		log.setfFacility(messageDTO.getFacility());
 		log.setfStatus((short) 1);
-		log.setfContent(messageDTO.getMessage());
+		log.setfContent(messageDTO.getFullContent());
+		//the fullContent field will be null if this message was not matched by the Logstash filter "split-message-body" 
+		//if(StringUtils.isEmpty(messageDTO.getFullContent())) {
+		//	log.setfContent(messageDTO.getMessage());
+		//}
+		
 		// determining the type of the log.
 		if (matchSystemLog(messageDTO)) {
 			log.setfType(LogType.SYSTEM_LOG.getCode());
@@ -71,7 +76,7 @@ public class PreLogicTask extends BasicTask {
 		try {
 			// query all log messages that are repeated any times in recent one hour.
 			KeywordCount countKeyword = elasticSearchAPI.countKeyword(
-					new Keyword("fullContent.keyword", messageDTO.getMessage()),
+					new Keyword("fullContent.keyword", messageDTO.getFullContent()),
 					new Keyword("host.keyword", messageDTO.getHost()),
 					new Keyword("dateRangeFrom",
 							DateUtil.date2Utc(DateUtil.calc(messageDTO.getTimestamp(), DateUtil.FIELD_HOUR, -1))),
