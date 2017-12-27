@@ -16,7 +16,7 @@ K_DIR="$SOFTWARE_DIR/kafka_2.11-0.11.0.0"
 
 log()
 {
-    echo `date "+%Y-%m-%d %H:%M:%S"` $1
+    echo `date "+%Y-%m-%d %H:%M:%S"` $1 >> $LOG_FILE_PATH
     echo ""
 }
 
