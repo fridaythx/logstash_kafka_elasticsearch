@@ -14,6 +14,8 @@ L_DIR="$SOFTWARE_DIR/logstash-5.5.1"
 
 K_DIR="$SOFTWARE_DIR/kafka_2.11-0.11.0.0"
 
+LOG_FILTER_JAR_PATH=`ls $SOFTWARE_DIR/log-filter-*.jar`
+
 log()
 {
     echo `date "+%Y-%m-%d %H:%M:%S"` $1 >> $LOG_FILE_PATH
@@ -99,7 +101,7 @@ boot_logfilter()
 {
     log "start log-filter.."
 
-    nohup java -jar $SOFTWARE_DIR/log-filter-1.0-SNAPSHOT.jar > /dev/null 2>&1 &
+    nohup java -jar $LOG_FILTER_JAR_PATH > /dev/null 2>&1 &
 
     log "log filter started."
 }
