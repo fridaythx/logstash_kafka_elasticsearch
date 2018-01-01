@@ -61,14 +61,14 @@ boot_elasticsearch()
     #首先启动elasticsearch
     nohup $E_DIR/bin/elasticsearch > $ES_BOOT_LOG_FILE_PATH 2>&1 &
     
-    log "sleep for a second."
+    log "sleep for a second waiting for the watch file to be created.."
 
     sleep 1
 
     watch $ES_BOOT_LOG_FILE_PATH "started"
 
     if [ "$?" = "0" ]; then
-        log "elastic search have done started successfully."
+        log "elastic search have started successfully."
     else
         log "elastic search could not be booted."
 	exit 1
