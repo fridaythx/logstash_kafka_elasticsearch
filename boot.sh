@@ -99,7 +99,7 @@ boot_logfilter()
 {
     log "start log-filter.."
 
-    nohup java -jar $SOFTWARE_DIR/log-filter-1.0-SNAPSHOT.jar > $SOFTWARE_DIR/log-filter-nohup.log 2>&1 &
+    nohup java -jar $SOFTWARE_DIR/log-filter-1.0-SNAPSHOT.jar > /dev/null 2>&1 &
 
     log "log filter started."
 }
@@ -109,7 +109,7 @@ boot_logstash()
     log "boot logstash"
     #启动log-filter
     #启动logstash
-    nohup $L_DIR/bin/logstash -f $L_DIR/logstash-simple.conf > $L_DIR/my_logstash.log 2>&1 &
+    nohup $L_DIR/bin/logstash -f $L_DIR/logstash-simple.conf > /dev/null 2>&1 &
     
     log "logstash finished booting without checking out boot log."
 }
