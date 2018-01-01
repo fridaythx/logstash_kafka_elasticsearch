@@ -4,7 +4,7 @@
 	<groupId>friday</groupId>
 	<artifactId>log-filter</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>log-filter</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -12,6 +12,8 @@
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/org/eclipse/jetty/jetty-maven-plugin/ -->
 		<jettyVersion>9.3.9.v20160517</jettyVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -144,12 +146,14 @@
 			<id>dev</id>
 			<properties>
 				<env>development</env>
+				<version>${project.version}</version>
 			</properties>
 		</profile>
 		<profile>
 			<id>prd</id>
 			<properties>
 				<env>production</env>
+				<version>${project.version}</version>
 			</properties>
 		</profile>
 	</profiles>

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+jar_path=`ls ./target/log-filter-*.jar`
+
 env="dev"
 
 while getopts "trp" opts
@@ -10,8 +12,9 @@ do
 		mvn clean test
         ;;
     r)
-        echo "do run."
-		mvn -Dmaven.test.skip=true clean package && nohup java -jar ./target/log-filter-1.0-SNAPSHOT.jar &
+        echo "do run" $jar_path
+        rm -f ./nohup.out
+		mvn -Dmaven.test.skip=true clean package && nohup java -jar $jar_path &
         ;;
 	p)
 		echo "do package prd version."

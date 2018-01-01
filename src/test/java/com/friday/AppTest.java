@@ -16,6 +16,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.alibaba.fastjson.JSON;
 import com.friday.consumer.Message;
 import com.friday.dal.SqlSessionFactory;
 import com.friday.dal.mapper.LogMapper;
@@ -263,5 +264,27 @@ public class AppTest {
 			e.printStackTrace();
 		}
 
+	}
+	
+	@Test
+	@Ignore
+	public void testRegex() {
+		String content = "{\"severity\":5,\"@timestamp\":\"2017-12-31T13:59:01.000Z\",\"fullContent\":\"notice tmsh[27871]: 01420002:5: AUDIT - pid=27871 user=root folder=/Common module=(tmos)# status=[Command OK] cmd_data=show sys mcp-state field-fmt\\n\",\"@version\":\"1\",\"host\":\"192.168.1.250\",\"message\":\" 123 : SSHPLUGIN AUDIT 435 \\n\",\"priority\":133,\"logsource\":\"bigip1\",\"facility\":16,\"severity_label\":\"Notice\",\"timestamp\":\"2017-12-31T13:59:01.000Z\",\"facility_label\":\"local0\"}";
+
+		System.out.println(content);
+
+		MessageDTO messageDTO = JSON.parseObject(content, MessageDTO.class);
+
+		PreLogicTask preLogicTask = new PreLogicTask(null);
+
+		boolean matchLtmLog = preLogicTask.matchLtmLog(messageDTO);
+		
+		boolean matchAuditLog = preLogicTask.matchAuditLog(messageDTO);
+		
+		System.out.println(messageDTO.getMessage());
+
+		System.out.println("matchLtmLog " + matchLtmLog);
+		
+		System.out.println("matchAuditLog " + matchAuditLog);
 	}
 }

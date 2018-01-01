@@ -55,11 +55,12 @@ public class PreLogicTask extends BasicTask {
 		log.setfFacility(messageDTO.getFacility());
 		log.setfStatus((short) 1);
 		log.setfContent(messageDTO.getFullContent());
-		//the fullContent field will be null if this message was not matched by the Logstash filter "split-message-body" 
-		//if(StringUtils.isEmpty(messageDTO.getFullContent())) {
-		//	log.setfContent(messageDTO.getMessage());
-		//}
-		
+		// the fullContent field will be null if this message was not matched by the
+		// Logstash filter "split-message-body"
+		// if(StringUtils.isEmpty(messageDTO.getFullContent())) {
+		// log.setfContent(messageDTO.getMessage());
+		// }
+
 		// determining the type of the log.
 		if (matchSystemLog(messageDTO)) {
 			log.setfType(LogType.SYSTEM_LOG.getCode());
@@ -110,18 +111,19 @@ public class PreLogicTask extends BasicTask {
 
 	public boolean matchSystemLog(MessageDTO dto) {
 		if (!matchAny(dto.getFacility(), 0, 2, 4, 7, 9, 10, 15, 16, 17, 18, 19, 20, 21, 22, 23)
-				&& matchAny(dto.getSeverity(), 4, 5) && !dto.getMessage().matches("WA")) {
+				&& matchAny(dto.getSeverity(), 4, 5) && !dto.getMessage().matches(".*WA.*\n*")) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean matchLtmLog(MessageDTO dto) {
-		if (matchAny(dto.getFacility(), 16) && !dto.getMessage().matches("AUDIT")
-				&& !dto.getMessage().matches("msgbusd:|msgbusd.sh:|msgbusd\\[[0-9]+\\]:")
-				&& !dto.getMessage().matches("icrd:|icrd_child:|icrd\\[[0-9]+\\]:|icrd_child\\[[0-9]+\\]:")
-				&& !dto.getMessage().matches(": 246415[34][890]{1} ")
-				&& !dto.getMessage().matches(": 017[cC][0-9a-fA-F]{4}") && !dto.getMessage().matches("SSHPLUGIN")) {
+		if (matchAny(dto.getFacility(), 16) && !dto.getMessage().matches(".*AUDIT.*\n*")
+				&& !dto.getMessage().matches(".*(msgbusd:|msgbusd\\.sh:|msgbusd\\[[0-9]+\\]:).*\n*")
+				&& !dto.getMessage().matches(".*(icrd:|icrd_child:|icrd\\[[0-9]+\\]:|icrd_child\\[[0-9]+\\]:).*\n*")
+				&& !dto.getMessage().matches(".*: 246415[34][890]{1} .*\n*")
+				&& !dto.getMessage().matches(".*: 017[cC][0-9a-fA-F]{4}.*\n*")
+				&& !dto.getMessage().matches(".*SSHPLUGIN.*\n*")) {
 			return true;
 		}
 		return false;
@@ -135,7 +137,7 @@ public class PreLogicTask extends BasicTask {
 	}
 
 	public boolean matchAuditLog(MessageDTO dto) {
-		if (matchAny(dto.getFacility(), 16) && dto.getMessage().matches("AUDIT")) {
+		if (matchAny(dto.getFacility(), 16) && dto.getMessage().matches(".*AUDIT.*\n*")) {
 			return true;
 		}
 		return false;
