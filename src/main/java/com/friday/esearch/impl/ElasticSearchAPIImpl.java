@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.unit.TimeValue;
@@ -90,6 +91,11 @@ public class ElasticSearchAPIImpl implements ElasticSearchAPI {
 				delayValueDTO.setVsAddress((String) source.get("vsAddress"));
 				delayValueDTO.setServerAddress((String) source.get("serverAddress"));
 				list.add(delayValueDTO);
+			}
+			
+			if(StringUtils.isEmpty(scrollResp.getScrollId())) {
+				LOG.info("ScrollId not existed, break loop");
+				break;
 			}
 
 			scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute()
