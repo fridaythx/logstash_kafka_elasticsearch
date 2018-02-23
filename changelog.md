@@ -9,3 +9,11 @@ author: friday
 type: config change
 version: 1.0.2
 desc: 接口地址指向本地
+
+date: 2018-02-23
+author: friday
+type: config change
+version: 1.0.4
+desc: 
+	修改 appender.rolling.strategy.max 配置
+
