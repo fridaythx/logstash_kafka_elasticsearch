@@ -17,3 +17,9 @@ version: 1.0.4
 desc: 
 	修改 appender.rolling.strategy.max 配置
 
+date: 2018-02-27
+author: friday
+type: config change
+version: 1.0.5
+desc: 
+	修改log4j配置，自动删除三天前log文件

@@ -4,7 +4,7 @@
   <groupId>friday</groupId>
   <artifactId>log-filter</artifactId>
   <name>log-filter</name>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
   <url>http://maven.apache.org</url>
   <build>
     <resources>
