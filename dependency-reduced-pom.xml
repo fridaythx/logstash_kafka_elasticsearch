@@ -4,7 +4,7 @@
   <groupId>friday</groupId>
   <artifactId>log-filter</artifactId>
   <name>log-filter</name>
-  <version>1.0.3</version>
+  <version>1.0.5</version>
   <url>http://maven.apache.org</url>
   <build>
     <resources>
@@ -52,15 +52,15 @@
     <profile>
       <id>dev</id>
       <properties>
-        <env>development</env>
         <version>${project.version}</version>
+        <env>development</env>
       </properties>
     </profile>
     <profile>
       <id>prd</id>
       <properties>
-        <env>production</env>
         <version>${project.version}</version>
+        <env>production</env>
       </properties>
     </profile>
   </profiles>
@@ -79,11 +79,11 @@
     </dependency>
   </dependencies>
   <properties>
-    <junitVersion>4.12</junitVersion>
-    <maven.compiler.target>1.8</maven.compiler.target>
     <jettyVersion>9.3.9.v20160517</jettyVersion>
+    <junitVersion>4.12</junitVersion>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 </project>
 
